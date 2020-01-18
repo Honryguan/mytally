@@ -1,0 +1,2 @@
+setCssToHead([".",[1],"uni-btn-v { margin: ",[0,20]," 0; padding: 0; }\n",],undefined,{path:"./pages/index/index.wxss"})();
+document.dispatchEvent(new CustomEvent("generateFuncReady", { detail: { generateFunc: $gwx('./pages/index/index.wxml') } }));

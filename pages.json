@@ -1,0 +1,50 @@
+{
+	"pages": [ //pages数组中第一项表示应用启动页，参考：https://uniapp.dcloud.io/collocation/pages
+		{
+			"path": "pages/index/index",
+			"style": {
+				"navigationBarTitleText": "极简记账"
+			}
+		}
+	    ,{
+            "path" : "pages/me/me",
+            "style" : {}
+        }
+        ,{
+            "path" : "pages/chart/chart",
+            "style" : {}
+        }
+        ,{
+            "path" : "pages/today/today",
+            "style" : {}
+        }
+    ],
+	"tabBar": {
+	    "color": "#7A7E83",
+	    "selectedColor": "#3cc51f",
+	    "borderStyle": "black",
+	    "backgroundColor": "#ffffff",
+	    "list": [ {
+	        "pagePath": "pages/chart/chart",
+	        "iconPath": "static/tabBarIco/search.png",
+	        "selectedIconPath": "static/tabBarIco/search_sel.png",
+	        "text": "图表"
+	    }, {
+	        "pagePath": "pages/index/index",
+	        "iconPath": "static/tabBarIco/index.png",
+	        "selectedIconPath": "static/tabBarIco/index_sel.png",
+	        "text": "首页"
+	    },{
+	        "pagePath": "pages/me/me",
+	        "iconPath": "static/tabBarIco/me.png",
+	        "selectedIconPath": "static/tabBarIco/me_sel.png",
+	        "text": "我的"
+	    }]
+	},
+	"globalStyle": {
+		"navigationBarTextStyle": "black",
+		"navigationBarTitleText": "uni-app",
+		"navigationBarBackgroundColor": "#F8F8F8",
+		"backgroundColor": "#F8F8F8"
+	}
+}

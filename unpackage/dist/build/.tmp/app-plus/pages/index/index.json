@@ -1,0 +1,6 @@
+{
+  "navigationBarTitleText": "uni-app",
+  "usingComponents": {
+    "uni-fab": "/components/uni-fab/uni-fab"
+  }
+}
