@@ -1,5 +1,134 @@
 
-.content {
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/**背景图片相关内容*/
+.budget {
+	background: url(../../static/img/jizhang.004daed0.jpg);
+	height: 400rpx;
+}
+.index-content{
 	display: -webkit-box;
 	display: -webkit-flex;
 	display: flex;
@@ -7,31 +136,18 @@
 	-webkit-box-direction: normal;
 	-webkit-flex-direction: column;
 	        flex-direction: column;
-	-webkit-box-align: center;
-	-webkit-align-items: center;
-	        align-items: center;
-	-webkit-box-pack: center;
-	-webkit-justify-content: center;
-	        justify-content: center;
+	padding: 200rpx 0rpx 0rpx 50rpx;
 }
-.logo {
-	height: 200rpx;
-	width: 200rpx;
-	margin-top: 200rpx;
-	margin-left: auto;
-	margin-right: auto;
-	margin-bottom: 50rpx;
+/**背景图片相关内容结束*/
+/**记账按钮*/
+.addButton {
+	width: 100rpx;
+	height: 100rpx;
+	position: fixed;
+	bottom: 200rpx;
+	right: 40rpx;
+	border-radius: 50px;
+	box-shadow: #2c405a;
 }
-.text-area {
-	display: -webkit-box;
-	display: -webkit-flex;
-	display: flex;
-	-webkit-box-pack: center;
-	-webkit-justify-content: center;
-	        justify-content: center;
-}
-.title {
-	font-size: 36rpx;
-	color: #8f8f94;
-}
+/**记账按钮结束*/
 

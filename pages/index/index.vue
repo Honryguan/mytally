@@ -14,9 +14,7 @@
 			<uni-list-item title="本周" note="最近一笔 早午晚餐66.00" titleRight="0.01" noteRight="67.00" :show-extra-icon="true" :extra-icon="extraIcon1" badge-text="12" />
 			<uni-list-item title="本月" note="最近一笔 早午晚餐66.00" titleRight="0.01" noteRight="67.00" :show-extra-icon="true" :extra-icon="extraIcon1" badge-text="12" />
 		</uni-list>
-		<view class="uni-padding-wrap uni-common-mt">
-			<navigator url="../today/today"><button type="primary" class="addButton">+</button></navigator>
-		</view>
+		<button type="primary" class="addButton">+</button>
 	</view>
 </template>
 
@@ -125,25 +123,27 @@ export default {
 <style>
 /**背景图片相关内容*/
 .budget {
-	background: url(../../static/jizhang.jpg);
+	background: url('~@/static/jizhang.jpg');
 	height: 400upx;
+	background-repeat: no-repeat;
+	background-size: 100% 100%;
 }
-.index-content{
+.index-content {
 	display: flex;
 	flex-direction: column;
 	padding: 200upx 0upx 0upx 50upx;
-	}
+}
 /**背景图片相关内容结束*/
 
 /**记账按钮*/
 .addButton {
-	width: 100upx;
-	height: 100upx;
+	width: 120upx;
+	height: 120upx;
 	position: fixed;
-	bottom: 200upx;
-	right: 40upx;
-	border-radius: 50px;
-	box-shadow: #2c405a;
+	bottom: 150upx;
+	right: 50upx;
+	border-radius: 60px;
+	background-color: #6b9eaf;
 }
 /**记账按钮结束*/
 </style>

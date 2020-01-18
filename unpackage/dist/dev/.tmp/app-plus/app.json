@@ -2,7 +2,8 @@
   "pages": [
     "pages/index/index",
     "pages/me/me",
-    "pages/chart/chart"
+    "pages/chart/chart",
+    "pages/today/today"
   ],
   "window": {
     "navigationBarTextStyle": "black",
