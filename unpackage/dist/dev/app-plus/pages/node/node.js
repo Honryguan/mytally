@@ -1,0 +1,2 @@
+setCssToHead([".",[1],"note-place { color: #008000; }\n.",[1],"account-num { padding: ",[0,20],"; }\n.",[1],"account-num-input { border-bottom-style: solid; height: ",[0,100],"; }\n",],undefined,{path:"./pages/node/node.wxss"})();
+document.dispatchEvent(new CustomEvent("generateFuncReady", { detail: { generateFunc: $gwx('./pages/node/node.wxml') } }));

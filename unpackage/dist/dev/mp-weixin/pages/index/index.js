@@ -131,7 +131,23 @@ __webpack_require__.r(__webpack_exports__);
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;var uniList = function uniList() {return __webpack_require__.e(/*! import() | components/uni-list/uni-list */ "components/uni-list/uni-list").then(__webpack_require__.bind(null, /*! @/components/uni-list/uni-list.vue */ 41));};var uniListItem = function uniListItem() {return __webpack_require__.e(/*! import() | components/uni-list-item/uni-list-item */ "components/uni-list-item/uni-list-item").then(__webpack_require__.bind(null, /*! @/components/uni-list-item/uni-list-item.vue */ 48));};var _default =
+Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;var uniIcons = function uniIcons() {return Promise.all(/*! import() | components/uni-icons/uni-icons */[__webpack_require__.e("common/vendor"), __webpack_require__.e("components/uni-icons/uni-icons")]).then(__webpack_require__.bind(null, /*! @/components/uni-icons/uni-icons.vue */ 51));};var uniList = function uniList() {return __webpack_require__.e(/*! import() | components/uni-list/uni-list */ "components/uni-list/uni-list").then(__webpack_require__.bind(null, /*! @/components/uni-list/uni-list.vue */ 59));};var uniListItem = function uniListItem() {return __webpack_require__.e(/*! import() | components/uni-list-item/uni-list-item */ "components/uni-list-item/uni-list-item").then(__webpack_require__.bind(null, /*! @/components/uni-list-item/uni-list-item.vue */ 66));};var _default =
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -157,53 +173,217 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
 {
   data: function data() {
     return {
-      title: 'SQLite' };
+      title: 'SQLite',
+      extraIcon1: {
+        color: '#4cd964',
+        size: '22',
+        type: 'compose' },
+
+      extraIcon2: {
+        color: '#4cd964',
+        size: '22',
+        type: 'spinner-cycle' },
+
+      extraIcon3: {
+        color: '#4cd964',
+        size: '22',
+        type: 'navigate' },
+
+      sumToday: 0.00,
+      todayNote: '最近一笔 餐饮 0.00',
+      startTodayTime: '',
+      endTodayTime: '' };
 
   },
+
   components: {
     uniList: uniList,
-    uniListItem: uniListItem },
+    uniListItem: uniListItem,
+    uniIcons: uniIcons },
 
+  onLoad: function onLoad() {
+    this.openDB();
+    this.createTables();
+    //this.existTableTypes('types');
+    this.initTypesData();
+
+    //this.initLastToday();
+  },
+  onShow: function onShow() {
+    this.initLastToday();
+    this.initDataToday();
+    console.log(new Date().getDay());
+  },
   methods: {
     openDB: function openDB() {
       plus.sqlite.openDatabase({
-        name: 'first',
-        path: '_doc/test.db',
+        name: 'tally',
+        path: '_doc/tally.db',
         success: function success(e) {
-          plus.nativeUI.alert('打开数据库test.db成功 ');
+          //plus.nativeUI.alert('打开数据库test.db成功 ');
         },
         fail: function fail(e) {
-          plus.nativeUI.alert('打开数据库test.db失败: ' + JSON.stringify(e));
+          //plus.nativeUI.alert('打开数据库test.db失败: ' + JSON.stringify(e));
+        } });
+
+    },
+    initDataToday: function initDataToday() {
+      var me = this;
+      var sum = 0;
+      plus.sqlite.selectSql({
+        name: 'tally',
+        sql: 'SELECT a.id AS id,a.time AS time,a.money AS money,t.name AS typeName FROM tally a LEFT JOIN types t ON a.typeId = t.id',
+        success: function success(data) {
+          for (var i in data) {
+            sum = sum + data[i].money;
+          }
+          me.sumToday = sum;
+        },
+        fail: function fail(e) {
+          plus.nativeUI.alert('查询SQL语句失败: ' + JSON.stringify(e));
+        } });
+
+    },
+    initLastToday: function initLastToday() {
+      var me = this;
+      var sum = 0;
+      me.startTodayTime = me.getTodayTime(3);
+      me.endTodayTime = me.getTodayTime(4);
+      console.log(me.startTodayTime);
+      console.log(me.endTodayTime);
+      plus.sqlite.selectSql({
+        name: 'tally',
+        sql: 'SELECT a.id AS id,a.time AS time,a.money AS money,t.name AS typeName FROM tally a LEFT JOIN types t ON a.typeId = t.id WHERE a.time >= "' + me.startTodayTime + '" AND a.time < "' + me.endTodayTime + '" ORDER BY a.time DESC limit 0,1;',
+        success: function success(data) {
+          for (var i in data) {
+            me.todayNote = '最近一笔 ' + data[i].typeName + ' ' + data[i].money;
+          }
+
+        },
+        fail: function fail(e) {
+          plus.nativeUI.alert('查询SQL语句失败: ' + JSON.stringify(e));
+        } });
+
+    },
+    /* existTableTypes:function(tableName) {
+       	plus.sqlite.selectSql({
+       		name: 'tally',
+       		sql: 'select count(*) as count  from sqlite_master where type="table" and name = "'+tableName+'";',
+       		success: function(data) {
+       			this.initTypesData();
+       		},
+       		fail: function(e) {
+       			plus.nativeUI.alert('查询SQL语句失败: ' + JSON.stringify(e));
+       		}
+       	});
+       }, */
+    existTableAccount: function existTableAccount(tableName) {
+      plus.sqlite.selectSql({
+        name: 'tally',
+        sql: 'select count(*) as count  from sqlite_master where type="table" and name = "' + tableName + '";',
+        success: function success(data) {
+          if (data.count > 0) {
+            //表格是存在的，不同重复插入数据
+            plus.sqlite.selectSql({
+              name: 'tally',
+              sql: 'select count(*) as count  from types;',
+              success: function success(data2) {
+                if (data2.count > 0) {
+                  //表格是存在的，不同重复插入数据
+
+                } else {
+                  this.initTypesData();
+                }
+                //plus.nativeUI.alert('查询SQL语句成功: ' + JSON.stringify(e));
+              } });
+
+
+          } else {
+
+          }
+          //plus.nativeUI.alert('查询SQL语句成功: ' + JSON.stringify(e));
+        },
+        fail: function fail(e) {
+          plus.nativeUI.alert('查询SQL语句失败: ' + JSON.stringify(e));
         } });
 
     },
     // 执行SQL语句
-    executeSQL: function executeSQL() {
+    initTypesData: function initTypesData() {
+      plus.sqlite.executeSql({ name: 'tally', sql: 'INSERT INTO types VALUES (null, "其他", "2020-12-12", "contact", null, null);' });
+      plus.sqlite.executeSql({ name: 'tally', sql: 'INSERT INTO types VALUES (null, "餐饮", "2020-12-12", "person", null, null);' });
+      plus.sqlite.executeSql({ name: 'tally', sql: 'INSERT INTO types VALUES (null, "交通", "2020-12-12", "personadd", null, null);' });
+      plus.sqlite.executeSql({ name: 'tally', sql: 'INSERT INTO types VALUES (null, "购物", "2020-12-12", "phone", null, null);' });
+      plus.sqlite.executeSql({ name: 'tally', sql: 'INSERT INTO types VALUES (null, "服饰", "2020-12-12", "location", null, null);' });
+      plus.sqlite.executeSql({ name: 'tally', sql: 'INSERT INTO types VALUES (null, "日用品", "2020-12-12", "email", null, null);' });
+      plus.sqlite.executeSql({ name: 'tally', sql: 'INSERT INTO types VALUES (null, "娱乐", "2020-12-12", "weibo", null, null);' });
+      plus.sqlite.executeSql({ name: 'tally', sql: 'INSERT INTO types VALUES (null, "食材", "2020-12-12", "chat", null, null);' });
+      plus.sqlite.executeSql({ name: 'tally', sql: 'INSERT INTO types VALUES (null, "零食", "2020-12-12", "qq", null, null);' });
+      plus.sqlite.executeSql({ name: 'tally', sql: 'INSERT INTO types VALUES (null, "烟酒茶", "2020-12-12", "camera", null, null);' });
+      plus.sqlite.executeSql({ name: 'tally', sql: 'INSERT INTO types VALUES (null, "学习", "2020-12-12", "mic", null, null);' });
+      plus.sqlite.executeSql({ name: 'tally', sql: 'INSERT INTO types VALUES (null, "医疗", "2020-12-12", "image", null, null);' });
+      plus.sqlite.executeSql({ name: 'tally', sql: 'INSERT INTO types VALUES (null, "住房", "2020-12-12", "map", null, null);' });
+      plus.sqlite.executeSql({ name: 'tally', sql: 'INSERT INTO types VALUES (null, "水电煤", "2020-12-12", "trash", null, null);' });
+      plus.sqlite.executeSql({ name: 'tally', sql: 'INSERT INTO types VALUES (null, "通讯", "2020-12-12", "close", null, null);' });
+      plus.sqlite.executeSql({ name: 'tally', sql: 'INSERT INTO types VALUES (null, "人情往来", "2020-12-12", "undo", null, null);' });
+      plus.sqlite.executeSql({ name: 'tally', sql: 'INSERT INTO types VALUES (null, "设置", "2020-12-12", "star", null, null);' });
+    },
+    createTables: function createTables() {
       plus.sqlite.executeSql({
-        name: 'first',
-        sql: 'create table if not exists database("name" CHAR(110),"sex" CHAR(10),"age" INT(11))',
-        success: function success(e) {
-          plus.sqlite.executeSql({
-            name: 'first',
-            sql: "insert into database values('彦','女','7000')",
-            success: function success(e) {
-              plus.nativeUI.alert('创建表table和插入数据成功');
-            },
-            fail: function fail(e) {
-              plus.nativeUI.alert('创建表table成功但插入数据失败: ' + JSON.stringify(e));
-            } });
-
+        name: 'tally',
+        sql:
+        'CREATE TABLE if not exists types ("id"  INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,"name"  TEXT,"time"  TEXT,"icon"  TEXT,"color"  TEXT,"parentId"  INTEGER);',
+        success: function success() {
+          //plus.sqlite.executeSql({ name: 'tally', sql: 'INSERT INTO types VALUES (null, "设置", null, "contact", null, null);' });
         },
-        fail: function fail(e) {
-          plus.nativeUI.alert('创建表table失败: ' + JSON.stringify(e));
+        fail: function fail() {
+          //plus.nativeUI.alert('创建表types失败: ' + JSON.stringify(e));
         } });
 
+      plus.sqlite.executeSql({
+        name: 'tally',
+        sql:
+        'CREATE TABLE if not exists tally ("id"  INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,"time"  TEXT,"typeId"  INTEGER,"money"  REAL,"remark"  TEXT,"accountId"  INTEGER);',
+        success: function success() {
+        },
+        fail: function fail() {
+          //plus.nativeUI.alert('创建表tally失败: ' + JSON.stringify(e));
+        } });
+
+
     },
+    //3-开始时间，4-结束时间，1-年月日时分秒，2-年月日
+    getTodayTime: function getTodayTime(type) {
+
+      var date = new Date(),
+      year = date.getFullYear(),
+      month = date.getMonth() + 1,
+      day = date.getDate(),
+      hour = date.getHours() < 10 ? "0" + date.getHours() : date.getHours(),
+      minute = date.getMinutes() < 10 ? "0" + date.getMinutes() : date.getMinutes(),
+      second = date.getSeconds() < 10 ? "0" + date.getSeconds() : date.getSeconds();
+      month >= 1 && month <= 9 ? month = "0" + month : "";
+      day >= 0 && day <= 9 ? day = "0" + day : "";
+
+      var timer = '';
+      if (type == 1) {
+        timer = year + '-' + month + '-' + day + ' ' + hour + ':' + minute + ':' + second;
+      } else if (type == 2) {
+        timer = year + '-' + month + '-' + day;
+      } else if (type == 3) {
+        timer = year + '-' + month + '-' + day + ' ' + '00:00:00';
+      } else if (type == 4) {
+        timer = year + '-' + month + '-' + day + ' ' + '23:59:59';
+      }
+      return timer;
+    },
+
+
     // 查询SQL语句
     selectSQL: function selectSQL() {
       plus.sqlite.selectSql({
-        name: 'first',
-        sql: 'select * from database',
+        name: 'tally',
+        sql: 'select * from tally',
         success: function success(e) {
           plus.nativeUI.alert('查询SQL语句成功: ' + JSON.stringify(e));
         },
@@ -215,7 +395,7 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
     // 删除表
     droptable: function droptable() {
       plus.sqlite.executeSql({
-        name: 'first',
+        name: 'tally',
         sql: 'drop table database',
         success: function success(e) {
           plus.nativeUI.alert('删除表database成功');
@@ -228,7 +408,7 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
     // 关闭数据库
     closeDB: function closeDB() {
       plus.sqlite.closeDatabase({
-        name: 'first',
+        name: 'tally',
         success: function success(e) {
           plus.nativeUI.alert('关闭数据库成功');
         },
@@ -240,8 +420,8 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
     isOpenDB: function isOpenDB() {
       if (
       plus.sqlite.isOpenDatabase({
-        name: 'first',
-        path: '_doc/test.db' }))
+        name: 'tally',
+        path: '_doc/tally.db' }))
 
       {
         plus.nativeUI.alert('Opened!');

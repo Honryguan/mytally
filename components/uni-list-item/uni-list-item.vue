@@ -17,6 +17,7 @@
 				</view>
 				<view class="uni-list-item__content-right">
 					<slot />
+					<text v-if="money" class="uni-list-item__content-money">{{money}}</text>
 					<text class="uni-list-item__content-title-right">{{ titleRight }}</text>
 					<text v-if="note" class="uni-list-item__content-note-right">{{ noteRight }}</text>
 				</view>
@@ -45,16 +46,20 @@
 		props: {
 			titleRight: {
 				type: String,
-				default: '0.00'
+				default: ''
 			}, // 列表标题
 			noteRight: {
 				type: String,
-				default: '0.00'
+				default: ''
 			},
 			title: {
 				type: String,
 				default: ''
 			}, // 列表标题
+			money: {
+				type: String,
+				default: ''
+			},
 			note: {
 				type: String,
 				default: ''
@@ -217,6 +222,7 @@
 		color: #3b4144;
 		overflow: hidden;
 	}
+	
 
 	.uni-list-item__content-note {
 		margin-top: 6rpx;
@@ -234,7 +240,12 @@
 		flex-direction: column;
 		color: #3b4144;
 	}
-
+	.uni-list-item__content-money{
+		margin-left: auto;
+		font-size: 35rpx;
+		color: #4cd964;
+		overflow: hidden;
+	}
 	.uni-list-item__content-title-right {
 		margin-left: auto;
 		font-size: 24rpx;

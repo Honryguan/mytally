@@ -109,6 +109,12 @@
 		        flex-direction: column;
 		color: #3b4144;
 }
+.uni-list-item__content-money.data-v-5319256e{
+		margin-left: auto;
+		font-size: 35rpx;
+		color: #4cd964;
+		overflow: hidden;
+}
 .uni-list-item__content-title-right.data-v-5319256e {
 		margin-left: auto;
 		font-size: 24rpx;

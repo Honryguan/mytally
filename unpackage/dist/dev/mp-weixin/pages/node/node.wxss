@@ -1,0 +1,12 @@
+
+.note-place {
+	color: #008000;
+}
+.account-num {
+	padding: 20rpx;
+}
+.account-num-input {
+	border-bottom-style: solid;
+	height: 100rpx;
+}
+

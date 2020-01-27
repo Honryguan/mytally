@@ -18,6 +18,12 @@
             "path" : "pages/today/today",
             "style" : {}
         }
+        ,{
+            "path" : "pages/node/node",
+            "style" : {
+				"navigationBarTitleText": "记一笔"
+			}
+        }
     ],
 	"tabBar": {
 	    "color": "#7A7E83",

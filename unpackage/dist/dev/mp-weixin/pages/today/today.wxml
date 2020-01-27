@@ -1,1 +1,1 @@
-<view>详情</view>
+<view><uni-section class="uni-section-top" vue-id="1" title="今天" sumTitle="{{sumTitle}}" type="line" bind:__l="__l"></uni-section><uni-list vue-id="2" bind:__l="__l" vue-slots="{{['default']}}"><block wx:for="{{moneyList}}" wx:for-item="item" wx:for-index="index" wx:key="index"><uni-list-item vue-id="{{('3-'+index)+','+('2')}}" title="{{item.typeName}}" note="{{item.time}}" money="{{item.money}}" show-extra-icon="{{true}}" extra-icon="{{extraIcon1}}" badge-text="12" show-arrow="{{false}}" bind:__l="__l"></uni-list-item></block></uni-list></view>
