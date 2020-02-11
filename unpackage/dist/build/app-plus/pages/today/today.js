@@ -1,1 +1,2 @@
+setCssToHead([".",[1],"uni-section-top { margin-top: 100px; }\n",],undefined,{path:"./pages/today/today.wxss"})();
 document.dispatchEvent(new CustomEvent("generateFuncReady", { detail: { generateFunc: $gwx('./pages/today/today.wxml') } }));

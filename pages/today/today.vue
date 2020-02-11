@@ -52,20 +52,8 @@ export default {
 		uniSection
 	},
 	onLoad() {
-		//var me = this;
 		this.openDB();
 		this.initData();
-
-		/* uni.sqlite.executeSql({
-			name: tally,
-			sql: 'SELECT a.id AS id,a.time AS time,a.money AS money,t.name AS typeName FROM tally a LEFT JOIN types t ON a.typeId = t.id WHERE a.time >= "2020-1-24 00:00:00" AND a.time < "2020-1-24 23:59:59"',
-			success: function(data) {
-				console.log(data)
-			},
-			fail: function(data) {
-				console.log(data)
-			}
-		}) */
 	},
 	methods: {
 		openDB: function() {
@@ -110,11 +98,12 @@ export default {
 			var sum = 0;
 			var startTime = me.getTodayTime(3);
 			var endTime = me.getTodayTime(4);
-			console.log(startTime+endTime);
+			
 			plus.sqlite.selectSql({
 				name: 'tally',
-				sql: 'SELECT a.id AS id,a.time AS time,a.money AS money,t.name AS typeName FROM tally a LEFT JOIN types t ON a.typeId = t.id WHERE a.time >= "'+startTime+'" AND a.time < "'+startTime+'" ORDER BY a.time DESC ',
+				sql: 'SELECT a.id AS id,a.time AS time,a.money AS money,t.name AS typeName FROM tally a LEFT JOIN types t ON a.typeId = t.id WHERE a.time >= "'+startTime+'" AND a.time < "'+endTime+'" ORDER BY a.time DESC ',
 				success: function(data) {
+					
 					for (let i in data) {
 						var bean = data[i];
 						me.moneyList.push({

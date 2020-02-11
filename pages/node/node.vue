@@ -1,7 +1,7 @@
 <template>
 	<view>
 		<view class="account-num">
-			<input class="account-num-input" type="digit"   
+			<input class="account-num-input" type="digit"  v-model="money"  
 			focus confirm-type="search" @confirm="saveTally" 
 			placeholder="0.00" placeholder-class="note-place" maxlength="10" />
 		</view>
@@ -38,6 +38,7 @@ export default {
 			dynamicList: [],
 			swiperList: [],
 			type:2,
+			money:'',
 			list: [
 				{
 					url: '/static/c1.png',
@@ -113,9 +114,8 @@ export default {
 			//console.log(e)
 			var me = this;
 			var time = me.getTime();
-			console.log(time);
 			// TODO
-			var money = 10.22;//e.detail.value;
+			var money = me.money;
 			plus.sqlite.executeSql({
 				name: 'tally',
 				sql: 'INSERT INTO tally VALUES (null, "'+time+'", '+me.type+', '+money+', null, 1);',

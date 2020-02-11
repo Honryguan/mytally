@@ -3,7 +3,8 @@
     "pages/index/index",
     "pages/me/me",
     "pages/chart/chart",
-    "pages/today/today"
+    "pages/today/today",
+    "pages/node/node"
   ],
   "window": {
     "navigationBarTextStyle": "black",

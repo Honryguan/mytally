@@ -1,1 +1,1 @@
-<view>图表</view>
+<view class="qiun-columns"><scroll-view class="time-select" scroll-x="true" scroll-left="120" data-event-opts="{{[['scroll',[['scroll',['$event']]]]]}}" bindscroll="__e"><view class="time-bean">自定义</view><view>本月</view><view>上个月</view><view>近三个月</view><view>近六个月</view><view>今年</view><view>去年</view><view>全部</view></scroll-view></view>

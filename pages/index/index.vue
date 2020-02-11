@@ -3,33 +3,28 @@
 		<view class="budget">
 			<view class="index-content">
 				<view class="content-pay">
-					<view class="pay-mouth">1</view>
+					<view class="pay-mouth">{{month}}</view>
 					<view class="pay-text">月·支出</view>
 				</view>
-				<view class="content-money">67.00</view>
-				<view class="content-ready">
+				<view class="content-money">{{sumMonth|dateFormat}}</view>
+				<!-- <view class="content-ready">
 					<view class="ready">预算</view>
 					<view class="ready-set">点击设置</view>
 					<view class="ready-gap">|</view>
 					<view class="ready-income">本月收入</view>
 					<view class="ready-income-money">100.00</view>
-				</view>
+				</view> -->
 			</view>
 		</view>
 		<uni-list>
 			<navigator url="../today/today">
-				<uni-list-item title="今天" :note="todayNote" titleRight="0.01" :noteRight="sumToday" :show-extra-icon="true" :extra-icon="extraIcon1" badge-text="12" />
+				<!-- titleRight="0.01" :noteRight="sumToday" -->
+				<uni-list-item title="今天" :note="todayNote" :money="sumToday|dateFormat" :show-extra-icon="true" :extra-icon="extraIcon1" />
 			</navigator>
-			<uni-list-item title="本周" note="1月13日 - 1月19日" titleRight="0.01" noteRight="67.00" :show-extra-icon="true" :extra-icon="extraIcon2" badge-text="12" />
-			<uni-list-item title="本月" note="1月1日 - 1月31日" titleRight="0.01" noteRight="67.00" :show-extra-icon="true" :extra-icon="extraIcon3" badge-text="12" />
+			<uni-list-item title="本周" :note="weekBetweenTime" :money="sumWeek|dateFormat" :show-extra-icon="true" :extra-icon="extraIcon2" />
+			<uni-list-item title="本月" :note="monthBetweenTime" :money="sumMonth|dateFormat" :show-extra-icon="true" :extra-icon="extraIcon3" />
 		</uni-list>
 		<navigator url="../node/node"><view class="addButton"></view></navigator>
-		<!-- <button class="test" type="primary" @click="openDB()">45</button> -->
-		<!-- <button class="test" type="primary" @click="executeSQL()">executeSQL</button> -->
-		<!-- <button class="test" type="primary" @click="initTypesData()">initTypesData</button> -->
-		<!-- <button class="test" type="primary" @click="selectSQL()">selectSQL</button> -->
-		<!-- <button class="test" type="primary" :data-tableName="types" @click="existTable('types')">existTable</button> -->
-		<button type="primary" @click="initLastToday()">d</button>
 	</view>
 </template>
 
@@ -57,12 +52,25 @@ export default {
 				type: 'navigate'
 			},
 			sumToday:0.00,
+			sumMonth:0.00,
+			sumWeek:0.00,
 			todayNote:'最近一笔 餐饮 0.00',
 			startTodayTime:'',
-			endTodayTime:''
+			endTodayTime:'',
+			month:'1',
+			weekBetweenTime:'1月13日 - 1月19日',
+			monthBetweenTime:'2月1日 - 2月30日',
+			startWeekTime:'',
+			endWeekTime:'',
+			startMonthTime:'',
+			endMonthTime:''
 		};
 	},
-	
+	filters:{
+		dateFormat(value){
+			return value.toFixed(2);
+		}
+	},
 	components: {
 		uniList,
 		uniListItem,
@@ -73,15 +81,39 @@ export default {
 		this.createTables();
 		//this.existTableTypes('types');
 		this.initTypesData();
+		//获取月份
 		
-		//this.initLastToday();
 	},
 	onShow() {
 		this.initLastToday();
 		this.initDataToday();
-		console.log(new Date().getDay());
+		this.initIndexMouth();
+		this.initIndexMouthMoney();
+		this.initWeekBetweenTime();
+		this.initMonthBetweenTime();
+		this.initWeekSum();
 	},
 	methods: {
+		initIndexMouthMoney: function() {
+			var me = this;
+			var sum = 0;
+			me.startTodayTime = me.getTodayTime(5);
+			me.endTodayTime = me.getTodayTime(6);
+			
+			plus.sqlite.selectSql({
+				name: 'tally',
+				sql: 'SELECT a.id AS id,a.time AS time,a.money AS money,t.name AS typeName FROM tally a LEFT JOIN types t ON a.typeId = t.id WHERE a.time >= "'+me.startTodayTime+'" AND a.time < "'+me.endTodayTime+'";',
+				success: function(data) {
+					for (let i in data) {
+						sum = sum + data[i].money
+					}
+					me.sumMonth = sum;
+				},
+				fail: function(e) {
+					plus.nativeUI.alert('查询SQL语句失败: ' + JSON.stringify(e));
+				}
+			});
+		},
 		openDB: function() {
 			plus.sqlite.openDatabase({
 				name: 'tally',
@@ -94,12 +126,71 @@ export default {
 				}
 			});
 		},
+		initWeekBetweenTime: function() {
+			var me = this;
+			var date = new Date();
+			var start = new Date();
+			var end = new Date();
+			//weekBetweenTime:'1月13日 - 1月19日'			
+			if(date.getDay() == 0){
+				start.setDate(date.getDate()-6);//获取AddDayCount天后的日期 
+			}else{
+				start.setDate(date.getDate()-date.getDay() +1);
+				end.setDate(date.getDate()+7-date.getDay());//获取AddDayCount天后的日期 
+			}			
+			var startMonth = start.getMonth()+1;
+			var startDay = start.getDate();
+			startDay >= 1 && startDay <= 9 ? (startDay = "0" + startDay) : "";
+			startMonth >= 1 && startMonth <= 9 ? (startMonth = "0" + startMonth) : "";
+			
+			var endMonth = end.getMonth()+1;
+			var endDay = end.getDate();
+			endMonth >= 1 && endMonth <= 9 ? (endMonth = "0" + endMonth) : "";
+			endDay >= 1 && endDay <= 9 ? (endDay = "0" + endDay) : "";
+			
+			
+			me.weekBetweenTime = startMonth+'月'+start.getDate()+'日'+' - '+endMonth+'月'+end.getDate()+'日';	
+			me.startWeekTime = start.getFullYear() + '-' + startMonth + '-' + startDay + ' ' + '00:00:00';
+			me.endWeekTime = end.getFullYear() + '-' + endMonth + '-' + endDay + ' ' + '23:59:59';
+			
+		},
+		initMonthBetweenTime: function() {
+			var me = this;
+			var start = new Date();
+			var end = new Date();
+			start.setDate(1);
+			var start=new Date();
+			var currentMonth=start.getMonth();
+			var nextMonth=++currentMonth;
+			var nextMonthFirstDay=new Date(start.getFullYear(),nextMonth,1);
+			var oneDay=1000*60*60*24;
+			var end =  new Date(nextMonthFirstDay-oneDay);
+
+			
+			var month = start.getMonth()+1;
+			var day = end.getDate();
+			month >= 1 && month <= 9 ? (month = "0" + month) : "";
+			
+			
+			me.monthBetweenTime = month+'月'+start.getDate()+'日'+' - '+month+'月'+end.getDate()+'日';		
+			me.startMonthTime = start.getFullYear() + '-' + month + '-01' + ' ' + '00:00:00';
+			day >= 0 && day <= 9 ? (day = "0" + day) : "";
+			me.endMonthTime = start.getFullYear() + '-' + month + '-' + day + ' ' + '23:59:59';
+		},
+		initIndexMouth: function() {
+			var me = this;
+			var date = new Date();
+			me.month = date.getMonth() + 1;
+
+		},
 		initDataToday: function() {
 			var me = this;
 			var sum = 0;
+			var startTime = me.getTodayTime(3);
+			var endTime = me.getTodayTime(4);
 			plus.sqlite.selectSql({
 				name: 'tally',
-				sql: 'SELECT a.id AS id,a.time AS time,a.money AS money,t.name AS typeName FROM tally a LEFT JOIN types t ON a.typeId = t.id',
+				sql: 'SELECT a.id AS id,a.time AS time,a.money AS money,t.name AS typeName FROM tally a LEFT JOIN types t ON a.typeId = t.id WHERE a.time >= "'+startTime+'" AND a.time < "'+endTime+'" ',
 				success: function(data) {
 					for (let i in data) {
 						sum = sum + data[i].money;
@@ -111,13 +202,31 @@ export default {
 				}
 			});
 		},
+		initWeekSum: function() {
+			var me = this;
+			var sum = 0;
+			var startTime = me.getTodayTime(3);
+			var endTime = me.getTodayTime(4);
+			plus.sqlite.selectSql({
+				name: 'tally',
+				sql: 'SELECT a.id AS id,a.time AS time,a.money AS money,t.name AS typeName FROM tally a LEFT JOIN types t ON a.typeId = t.id WHERE a.time >= "'+me.startWeekTime+'" AND a.time < "'+me.endWeekTime+'" ',
+				success: function(data) {
+					for (let i in data) {
+						sum = sum + data[i].money;
+					}
+					me.sumWeek = sum;
+				},
+				fail: function(e) {
+					plus.nativeUI.alert('查询SQL语句失败: ' + JSON.stringify(e));
+				}
+			});
+		},
 		initLastToday: function() {
 			var me = this;
 			var sum = 0;
 			me.startTodayTime = me.getTodayTime(3);
 			me.endTodayTime = me.getTodayTime(4);
-			console.log(me.startTodayTime);
-			console.log(me.endTodayTime);
+	
 			plus.sqlite.selectSql({
 				name: 'tally',
 				sql: 'SELECT a.id AS id,a.time AS time,a.money AS money,t.name AS typeName FROM tally a LEFT JOIN types t ON a.typeId = t.id WHERE a.time >= "'+me.startTodayTime+'" AND a.time < "'+me.endTodayTime+'" ORDER BY a.time DESC limit 0,1;',
@@ -132,18 +241,6 @@ export default {
 				}
 			});
 		},
-		/* existTableTypes:function(tableName) {
-			plus.sqlite.selectSql({
-				name: 'tally',
-				sql: 'select count(*) as count  from sqlite_master where type="table" and name = "'+tableName+'";',
-				success: function(data) {
-					this.initTypesData();
-				},
-				fail: function(e) {
-					plus.nativeUI.alert('查询SQL语句失败: ' + JSON.stringify(e));
-				}
-			});
-		}, */
 		existTableAccount:function(tableName) {
 			plus.sqlite.selectSql({
 					name: 'tally',
@@ -241,37 +338,15 @@ export default {
 				timer = year + '-' + month + '-' + day + ' ' + '00:00:00';
 			}else if(type == 4){
 				timer = year + '-' + month + '-' + day + ' ' + '23:59:59';
+			}else if(type == 5){
+				timer = year + '-' + month + '-00' + ' ' + '23:59:59';
+			}else if(type == 6){
+				timer = year + '-' + month + '-31' + ' ' + '23:59:59';
 			}
+			
 			return timer;
 		},
 		
-		
-		// 查询SQL语句
-		selectSQL: function() {
-			plus.sqlite.selectSql({
-				name: 'tally',
-				sql: 'select * from tally',
-				success: function(e) {
-					plus.nativeUI.alert('查询SQL语句成功: ' + JSON.stringify(e));
-				},
-				fail: function(e) {
-					plus.nativeUI.alert('查询SQL语句失败: ' + JSON.stringify(e));
-				}
-			});
-		},
-		// 删除表
-		droptable: function() {
-			plus.sqlite.executeSql({
-				name: 'tally',
-				sql: 'drop table database',
-				success: function(e) {
-					plus.nativeUI.alert('删除表database成功');
-				},
-				fail: function(e) {
-					plus.nativeUI.alert('删除表database失败: ' + JSON.stringify(e));
-				}
-			});
-		},
 		// 关闭数据库
 		closeDB: function() {
 			plus.sqlite.closeDatabase({

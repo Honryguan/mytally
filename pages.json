@@ -8,15 +8,15 @@
 		}
 	    ,{
             "path" : "pages/me/me",
-            "style" : {}
+            "style" : {"navigationBarTitleText": "我"}
         }
         ,{
             "path" : "pages/chart/chart",
-            "style" : {}
+            "style" : {"navigationBarTitleText": "图表"}
         }
         ,{
             "path" : "pages/today/today",
-            "style" : {}
+            "style" : {"navigationBarTitleText": "今日详情"}
         }
         ,{
             "path" : "pages/node/node",
