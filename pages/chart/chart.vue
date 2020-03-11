@@ -1,15 +1,15 @@
 <template>
 	<view class="qiun-columns">
-		<!-- <view class="time-cloumns">
+		 <view class="time-cloumns">
 			<view class="time-title">
 				时间：
-			</view>
+			</view> 
 			<!-- <scroll-view class="scroll-view_H" scroll-x="true" @scroll="scroll" scroll-left="120">
-				<view id="demo1" class="scroll-view-item_H uni-bg-red">A</view>
+							<view id="demo1" class="scroll-view-item_H uni-bg-red">A</view>
 				<view id="demo2" class="scroll-view-item_H uni-bg-green">B</view>
 				<view id="demo3" class="scroll-view-item_H uni-bg-blue">C</view>
 			</scroll-view> -->
-			<scroll-view class="time-select" scroll-x="true" @scroll="scroll" scroll-left="120">
+			 <scroll-view class="time-select" scroll-x="true" @scroll="scroll" scroll-left="120">
 				<view class="time-bean">
 					自定义
 				</view>
@@ -36,7 +36,7 @@
 				</view>
 			</scroll-view>
 			
-		</view>	 -->
+		</view>	 
 		<view class="tab" @tap="toggleTab('dateStart')">2020-02-03</view>
 		<view class="tab" @tap="toggleTab('dateEnd')">2020-02-03</view>
 			<w-picker
