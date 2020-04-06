@@ -99,7 +99,7 @@ export default {
 			var sum = 0;
 			me.startTodayTime = me.getTodayTime(5);
 			me.endTodayTime = me.getTodayTime(6);
-			
+			//
 			plus.sqlite.selectSql({
 				name: 'tally',
 				sql: 'SELECT a.id AS id,a.time AS time,a.money AS money,t.name AS typeName FROM tally a LEFT JOIN types t ON a.typeId = t.id WHERE a.time >= "'+me.startTodayTime+'" AND a.time < "'+me.endTodayTime+'";',
